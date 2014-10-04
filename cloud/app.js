@@ -13,13 +13,38 @@ app.get('/hello', function (req, res) {
   res.render('hello');
 });
 
-app.get('/test', function (req, res) {
-  var fromUserId = '5427ce8be4b0e9d9a645c9c7';
-  var toUserId = '53f0d534e4b0c1ae470ca958';
+function addFriendTest(req, res) {
+  var fromUserId = '53f0d534e4b0c1ae470ca958';
+  var toUserId = '540939e4e4b02b98df61ccb6';
   muser.addFriendForBoth(fromUserId, toUserId).then(function () {
     res.send('ok');
   }, mutil.renderErrorFn(res));
-});
+}
 
-// 最后，必须有这行代码来使 express 响应 HTTP 请求
+function removeFriendTest(req, res) {
+  var fromUserId = '53f0d534e4b0c1ae470ca958';
+  var toUserId = '540939e4e4b02b98df61ccb6';
+  muser.removeFriendForBoth(fromUserId, toUserId).then(function () {
+    res.send('ok');
+  }, mutil.renderErrorFn(res));
+}
+
+function findUserTest(req, res) {
+  muser.findUserById('53f0d534e4b0c1ae470ca958').then(function (user) {
+    res.send(user);
+  }, mutil.renderErrorFn(res));
+}
+
+function renderFriends(req, res) {
+  var name = req.params.name;
+  muser.findFriends(name).then(function (friends) {
+    res.send(friends);
+  }, mutil.renderErrorFn(res))
+}
+
+
+app.get('/addFriend', addFriendTest);
+app.get('/removeFriend', removeFriendTest);
+app.get('/user', findUserTest);
+app.get('/:name/friends', renderFriends);
 app.listen();
